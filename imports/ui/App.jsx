@@ -34,7 +34,11 @@ export const App = () => {
 
   const deleteTask = ({ _id }) => TasksCollection.remove(_id)
 
+  const pendingTasksCount = useTracker(() => (
+    TasksCollection.find(hideCompletedFilter).count()
+  ))
 
+  const pendingTasksTitle = `${pendingTasksCount ? `(${pendingTasksCount})` : ""}`
 
 
   return (
@@ -42,7 +46,7 @@ export const App = () => {
       <header>
         <div className="app-bar">
           <div className="app-header">
-            <h1>Welcome to Meteor! 📝 This is Todo List!</h1>
+            <h1>Welcome to Meteor! 📝 This is Todo List! {pendingTasksTitle}</h1>
           </div>
         </div>
       </header>
