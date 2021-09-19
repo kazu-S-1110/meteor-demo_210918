@@ -29,22 +29,29 @@ export const App = () => {
 
 
   return (
+    <div className="app">
+      <header>
+        <div className="app-bar">
+          <div className="app-header">
+            <h1>Welcome to Meteor! 📝 This is Todo List!</h1>
+          </div>
+        </div>
+      </header>
 
-    <div>
-      <h1>Welcome to Meteor!</h1>
-      <Hello />
-      <Info />
-      <TaskForm />
-      <ul>
-        {tasks.map(task => (
-          <Task
-            key={task._id}
-            task={task}
-            onCheckboxClick={toggleChecked}
-            onDeleteClick={deleteTask}
-          />)
-        )}
-      </ul>
+      <div className="main">
+        <TaskForm />
+
+        <ul className="tasks">
+          {tasks.map(task => (
+            <Task
+              key={task._id}
+              task={task}
+              onCheckboxClick={toggleChecked}
+              onDeleteClick={deleteTask}
+            />
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
