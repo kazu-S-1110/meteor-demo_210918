@@ -24,6 +24,9 @@ export const App = () => {
     })
   }
 
+  const deleteTask = ({ _id }) => TasksCollection.remove(_id)
+
+
 
   return (
 
@@ -33,7 +36,14 @@ export const App = () => {
       <Info />
       <TaskForm />
       <ul>
-        {tasks.map(task => <Task key={task._id} task={task} onCheckboxClick={toggleChecked} />)}
+        {tasks.map(task => (
+          <Task
+            key={task._id}
+            task={task}
+            onCheckboxClick={toggleChecked}
+            onDeleteClick={deleteTask}
+          />)
+        )}
       </ul>
     </div>
   )
