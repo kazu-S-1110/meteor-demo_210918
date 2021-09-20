@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { TasksCollection } from '../api/TasksCollection.js'
 import { useTracker } from 'meteor/react-meteor-data'
+import { Meteor } from 'meteor/meteor'
 
 import { Hello } from './Hello.jsx'
 import { Info } from './Info.jsx'
 import { Task } from './Task'
 import { TaskForm } from './TaskForm.jsx'
+import { LoginForm } from './LoginForm.jsx'
 
 // const tasks = [
 //   { _id: 1, text: "First Task" },
@@ -17,6 +19,7 @@ export const App = () => {
   const [hideCompleted, setHideCompleted] = useState(false)
 
   const hideCompletedFilter = { isChecked: { $ne: true } }
+  const user = useTracker(() => Meteor.user())
 
   const tasks = useTracker(() =>
     TasksCollection.find(hideCompleted ? hideCompletedFilter : {}, {
@@ -52,23 +55,30 @@ export const App = () => {
       </header>
 
       <div className="main">
-        <TaskForm />
-        <div className="filter">
-          <button onClick={() => setHideCompleted(!hideCompleted)}>
-            {hideCompleted ? "Show All" : "Hide Completed"}
-          </button>
-        </div>
+        {user ? (
+          <>
+            <TaskForm />
+            <div className="filter">
+              <button onClick={() => setHideCompleted(!hideCompleted)}>
+                {hideCompleted ? "Show All" : "Hide Completed"}
+              </button>
+            </div>
 
-        <ul className="tasks">
-          {tasks.map(task => (
-            <Task
-              key={task._id}
-              task={task}
-              onCheckboxClick={toggleChecked}
-              onDeleteClick={deleteTask}
-            />
-          ))}
-        </ul>
+            <ul className="tasks">
+              {tasks.map(task => (
+                <Task
+                  key={task._id}
+                  task={task}
+                  onCheckboxClick={toggleChecked}
+                  onDeleteClick={deleteTask}
+                />
+              ))}
+            </ul>
+          </>
+
+        ) : (
+          <LoginForm />
+        )}
       </div>
     </div>
   )
