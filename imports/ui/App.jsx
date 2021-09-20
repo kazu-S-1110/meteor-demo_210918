@@ -20,13 +20,23 @@ export const App = () => {
 
   const hideCompletedFilter = { isChecked: { $ne: true } }
   const user = useTracker(() => Meteor.user())
+  const userFilter = user ? { userId: user._id } : {}
+  const pendingOnlyFilter = { ...hideCompletedFilter, ...userFilter }
 
-  const tasks = useTracker(() =>
-    TasksCollection.find(hideCompleted ? hideCompletedFilter : {}, {
-      sort: { createdAt: -1 },
-    }).fetch()
-  )
 
+
+  const tasks = useTracker(() => {
+    if (!user) {
+      return []
+    }
+
+    return TasksCollection.find(
+      hideCompleted ? pendingOnlyFilter : userFilter,
+      {
+        sort: { createdAt: -1 },
+      }
+    ).fetch()
+  })
   const toggleChecked = ({ _id, isChecked }) => {
     TasksCollection.update(_id, {
       $set: {
@@ -37,9 +47,13 @@ export const App = () => {
 
   const deleteTask = ({ _id }) => TasksCollection.remove(_id)
 
-  const pendingTasksCount = useTracker(() => (
-    TasksCollection.find(hideCompletedFilter).count()
-  ))
+  const pendingTasksCount = useTracker(() => {
+    if (!user) {
+      return 0
+    }
+
+    return TasksCollection.find(pendingOnlyFilter).count()
+  })
 
   const pendingTasksTitle = `${pendingTasksCount ? `(${pendingTasksCount})` : ""}`
 
@@ -57,7 +71,7 @@ export const App = () => {
       <div className="main">
         {user ? (
           <>
-            <TaskForm />
+            <TaskForm user={user} />
             <div className="filter">
               <button onClick={() => setHideCompleted(!hideCompleted)}>
                 {hideCompleted ? "Show All" : "Hide Completed"}
