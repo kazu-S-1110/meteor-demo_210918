@@ -37,15 +37,10 @@ export const App = () => {
       }
     ).fetch()
   })
-  const toggleChecked = ({ _id, isChecked }) => {
-    TasksCollection.update(_id, {
-      $set: {
-        isChecked: !isChecked
-      }
-    })
-  }
+  const toggleChecked = ({ _id, isChecked }) => Meteor.call('tasks.setIsChecked', _id, !isChecked)
 
-  const deleteTask = ({ _id }) => TasksCollection.remove(_id)
+
+  const deleteTask = ({ _id }) => Meteor.call('tasks.remove', _id)
 
   const pendingTasksCount = useTracker(() => {
     if (!user) {
@@ -72,7 +67,7 @@ export const App = () => {
       <div className="main">
         {user ? (
           <>
-            <TaskForm user={user} />
+            <TaskForm />
             <div className="user" onClick={logout}>
               {user.username} 🚪 logout
             </div>
