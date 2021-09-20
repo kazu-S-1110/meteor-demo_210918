@@ -57,6 +57,7 @@ export const App = () => {
 
   const pendingTasksTitle = `${pendingTasksCount ? `(${pendingTasksCount})` : ""}`
 
+  const logout = () => Meteor.logout()
 
   return (
     <div className="app">
@@ -72,6 +73,9 @@ export const App = () => {
         {user ? (
           <>
             <TaskForm user={user} />
+            <div className="user" onClick={logout}>
+              {user.username} 🚪 logout
+            </div>
             <div className="filter">
               <button onClick={() => setHideCompleted(!hideCompleted)}>
                 {hideCompleted ? "Show All" : "Hide Completed"}
